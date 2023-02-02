@@ -22,14 +22,14 @@ class RegisterWindow(Screen):
             check = bool(dictionary)
 
             if not validate_email(self.email.text):
-                self.ids.new_account_message.text = "USE REAL EMAIL"
+                self.ids.new_account_message.text = "use real e-mail"
                 self.reset()
 
             elif self.password.text != self.repeatedPassword.text:
-                self.ids.new_account_message.text = "PASSWORDS DON'T MATCH"
+                self.ids.new_account_message.text = "Passwords don't match"
                 self.reset()
             elif check:
-                self.ids.new_account_message.text = "USER ALREADY EXISTS"
+                self.ids.new_account_message.text = "User Already Exists"
             else:
                 if self.password.text == self.repeatedPassword.text and validate_email(self.email.text):
                     usersResources.add_user(self.username.text, self.password.text, self.email.text)
@@ -38,7 +38,7 @@ class RegisterWindow(Screen):
                     sm.current = "login"
                     print("OK")
         else:
-            self.ids.new_account_message.text = "fill out all the form fields"
+            self.ids.new_account_message.text = "Fill out all the form fields"
             self.reset()
 
     def reset(self):
