@@ -27,10 +27,14 @@ class Tickets:
             with self.connection.cursor() as cursor:
                 cursor.execute(get_ticket_cost_query, (ride_id,))
                 temp = cursor.fetchall()
-                cost = temp[0][0]
+                if temp != []:
+                    cost = temp[0][0]
+                else:
+                    print("Nie ma takiej linii")
+                    return
 
         except Error as e:
-            print("Nie ma takiej linii")
+            print("Błąd przy znajdowaniu kosztu biletu")
 
         ticket_values = (ticket_id, ride_id, user_id, seat_no, cost)
         try:
@@ -61,4 +65,4 @@ class Tickets:
     db = Database()
     db.create_all()
     tickets = Tickets(db)
-    tickets.remove_ticket('2-3',2,1,3)"""
+    tickets.add_ticket(4,1,0)"""
