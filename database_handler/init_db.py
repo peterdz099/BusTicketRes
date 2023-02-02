@@ -52,9 +52,7 @@ class Database:
         ('Kraków'),
         ('Warszawa'),
         ('Bydgoszcz'),
-        ('Rzeszów'),
-        ('Wrocław'),
-        ('Tarnów')
+        ('Rzeszów')
         """
 
         with self._connection.cursor() as cursor:
@@ -73,7 +71,8 @@ class Database:
         FOREIGN KEY (ticket_id)
             REFERENCES rides(ride_id),
         FOREIGN KEY (user_id)
-            REFERENCES users(user_id)
+            REFERENCES users(user_id),
+        CONSTRAINT seat_no CHECK (seat_no BETWEEN 0 AND (SELECT seats FROM rides r, ticket t WHERE t.ride_id = r.ride.id))
         ) """
 
         with self._connection.cursor() as cursor:
@@ -88,7 +87,7 @@ class Database:
         departure datetime NOT NULL,
         destination varchar(20) NOT NULL,
         src varchar(20) NOT NULL,
-        seats varchar(110) NOT NULL,
+        seats int(11) NOT NULL,
         price int(11) NOT NULL,
         FOREIGN KEY (destination)
             REFERENCES cities(city),
@@ -99,10 +98,10 @@ class Database:
 
         insert_into_rides = """
         INSERT IGNORE INTO rides (ride_id, arrival, departure, destination, src, seats, price) VALUES
-        (1, '2022-02-10 10:03:00', '2022-02-10 09:01:00', 'Warszawa', 'Kraków', '23',  175),
-        (2, '2022-02-05 11:15:00', '2022-02-05 10:05:00', 'Tarnów', 'Wrocław', '21',  185),
-        (3, '2022-02-05 12:13:00', '2022-02-05 10:13:00', 'Rzeszów', 'Toruń', '23',  205),
-        (4, '2022-02-05 12:13:00', '2022-02-05 10:13:00', 'Będzin', 'Toruń', '23',  205)"""
+        (1, '2022-02-10 10:03:00', '2022-02-10 09:01:00', 'Warszawa', 'Kraków', 23,  175),
+        (2, '2022-02-05 11:15:00', '2022-02-05 10:05:00', 'Tarnów', 'Wrocław', 21,  185),
+        (3, '2022-02-05 12:13:00', '2022-02-05 10:13:00', 'Rzeszów', 'Toruń', 23,  205),
+        (4, '2022-02-05 12:13:00', '2022-02-05 10:13:00', 'Będzin', 'Toruń', 23,  205)"""
 
         with self._connection.cursor() as cursor:
             cursor.execute(create_ride_table_query)
