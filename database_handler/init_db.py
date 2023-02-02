@@ -63,26 +63,54 @@ class Database:
     def create_ticket_table(self):
         create_ticket_table_query = """
         CREATE TABLE IF NOT EXISTS ticket (
-        ticket_id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        ride_id int(11) NOT NULL,
+        ticket_id VARCHAR(20) NOT NULL PRIMARY KEY,
+        ride_id VARCHAR(20) NOT NULL,
         user_id int(11) NOT NULL,
-        seat_no varchar(10) NOT NULL,
+        seat_no int(11) NOT NULL,
         cost int(11) NOT NULL,
-        FOREIGN KEY (ticket_id)
+        FOREIGN KEY (ride_id)
             REFERENCES rides(ride_id),
         FOREIGN KEY (user_id)
-            REFERENCES users(user_id),
-        CONSTRAINT seat_no CHECK (seat_no BETWEEN 0 AND (SELECT seats FROM rides r, ticket t WHERE t.ride_id = r.ride.id))
+            REFERENCES users(user_id)
         ) """
+
+        delete_check_seat_trigger_query = """
+        DROP TRIGGER IF EXISTS check_seat_no;
+        """
+        check_seat_no_trigger = """
+        CREATE TRIGGER check_seat_no BEFORE INSERT ON ticket
+        FOR EACH ROW
+        IF NEW.seat_no > (SELECT seats FROM rides r WHERE r.ride_id = NEW.ride_id)
+        THEN 
+        SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Niepoprawny numer miejsca';
+        END IF;
+        """
+
+        delete_check_unique_seat_to_ride_trigger_query = """
+        DROP TRIGGER IF EXISTS check_unique_seat_to_ride;
+        """
+
+        check_unique_seat_to_ride_trigger_query = """
+        CREATE TRIGGER check_unique_seat_to_ride BEFORE INSERT ON ticket
+        FOR EACH ROW
+        IF NEW.seat_no in (SELECT seat_no FROM ticket t WHERE NEW.ride_id = t.ride_id)
+        THEN 
+        SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Miejsce zajęte';
+        END IF;
+        """
 
         with self._connection.cursor() as cursor:
             cursor.execute(create_ticket_table_query)
+            cursor.execute(delete_check_seat_trigger_query)
+            cursor.execute(delete_check_unique_seat_to_ride_trigger_query)
+            cursor.execute(check_seat_no_trigger)
+            cursor.execute(check_unique_seat_to_ride_trigger_query)
             self._connection.commit()
 
     def create_rides_table(self):
         create_ride_table_query = """
         CREATE TABLE IF NOT EXISTS rides (
-        ride_id int(11) NOT NULL PRIMARY KEY,
+        ride_id VARCHAR(20) NOT NULL PRIMARY KEY,
         arrival datetime NOT NULL,
         departure datetime NOT NULL,
         destination varchar(20) NOT NULL,
@@ -93,8 +121,8 @@ class Database:
             REFERENCES cities(city),
         FOREIGN KEY (src)
             REFERENCES cities(city)
-
         )"""
+
 
         insert_into_rides = """
         INSERT IGNORE INTO rides (ride_id, arrival, departure, destination, src, seats, price) VALUES
@@ -115,3 +143,6 @@ class Database:
         self.create_ticket_table()
 
 
+"""if __name__ == "__main__":
+    xd = Database()
+    xd.create_all()"""
