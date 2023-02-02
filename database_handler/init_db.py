@@ -48,7 +48,7 @@ class Database:
         AND destination = %s
         """
 
-        connections_list = {}
+        connections_list = []
 
         connection_values = (source, destination)
         temp = None
@@ -57,10 +57,10 @@ class Database:
             temp = cursor.fetchall()
 
 
-        counter = 0
+
 
         for listing in temp:
-            suggestions = []
+
             ride_id = listing[0]
             arrival = listing[1]
             departure = listing[2]
@@ -70,9 +70,9 @@ class Database:
             price = listing[6]
             item = {"ride_id": ride_id, "arrival": arrival, "departure": departure, "destination": destination,
                     "src": src, "seats": seats, "price": price}
-            suggestions.append(item)
-            connections_list.update({f'{counter}': suggestions})
-            counter += 1
+
+            connections_list.append(item)
+
         return connections_list
 
     def create_users_table(self):
@@ -193,8 +193,8 @@ class Database:
         self.create_ticket_table()
 
 
-"""if __name__ == "__main__":
+if __name__ == "__main__":
     xd = Database()
     xd.create_all()
-    print(xd.list_connections('dupa', 'Warszawa'))"""
+    print(xd.list_cities())
 
