@@ -109,7 +109,7 @@
                     theme_icon_color: "Custom"
                     icon_size: "45sp"
                     pos_hint:{"center_x":0.5,"center_y":0.1}
-                    #on_release: root.go_to_sql()
+                    on_release: root.go_to_sql()
 
                 MDIconButton:
                     icon: "language-python"
@@ -117,7 +117,7 @@
                     theme_icon_color: "Custom"
                     icon_size: "45sp"
                     pos_hint:{"center_x":0.35,"center_y":0.1}
-                    #on_release: root.go_to_py()
+                    on_release: root.go_to_py()
 
                 MDIconButton:
                     icon: "github"
@@ -125,7 +125,7 @@
                     theme_icon_color: "Custom"
                     icon_size: "45sp"
                     pos_hint:{"center_x":0.65,"center_y":0.1}
-                    #on_release: root.go_to_github()
+                    on_release: root.go_to_github()
             Screen:
                 name: "half_screen_verify"
                 canvas.before:

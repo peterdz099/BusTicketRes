@@ -1,6 +1,7 @@
 import os
 import smtplib
 import ssl
+import webbrowser
 from email.message import EmailMessage
 import random
 from kivy.uix.screenmanager import Screen
@@ -113,3 +114,16 @@ class LoginWindow(Screen):
         self.ids.half_screen_manager.current = "half_screen_login"
         self.ids.half_screen_manager.transition.direction = "up"
         LoginWindow.generated_code = None
+
+    @staticmethod
+    def go_to_github():
+        webbrowser.open("https://github.com/peterdz099/BusTicketRes")
+
+    @staticmethod
+    def go_to_py():
+        webbrowser.open("https://www.python.org/")
+
+    @staticmethod
+    def go_to_sql():
+        webbrowser.open("https://www.mysql.com/")
+
