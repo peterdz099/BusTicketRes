@@ -48,12 +48,32 @@ class Database:
         AND destination = %s
         """
 
+        connections_list = {}
 
         connection_values = (source, destination)
+        temp = None
         with self._connection.cursor() as cursor:
             cursor.execute(list_connections_query, connection_values)
-            return cursor.fetchall()
+            temp = cursor.fetchall()
 
+
+        counter = 0
+
+        for listing in temp:
+            suggestions = []
+            ride_id = listing[0]
+            arrival = listing[1]
+            departure = listing[2]
+            destination = listing[3]
+            src = listing[4]
+            seats = listing[5]
+            price = listing[6]
+            item = {"ride_id": ride_id, "arrival": arrival, "departure": departure, "destination": destination,
+                    "src": src, "seats": seats, "price": price}
+            suggestions.append(item)
+            connections_list.update({f'{counter}': suggestions})
+            counter += 1
+        return connections_list
 
     def create_users_table(self):
         create_users_table_query = """
@@ -176,7 +196,5 @@ class Database:
 """if __name__ == "__main__":
     xd = Database()
     xd.create_all()
-    lista = (xd.list_connections('Kraków', 'Warszawa'))
-    for i in lista:
-        print(i)
-"""
+    print(xd.list_connections('dupa', 'Warszawa'))"""
+
