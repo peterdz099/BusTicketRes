@@ -1,0 +1,203 @@
+<LoginWindow>:
+    name: "login"
+
+    email_or_username: email_or_username
+    password: passwd
+
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    Image:
+        source: 'resources/login.png'
+        pos_hint:{"center_x": 0.7,"center_y": 0.5}
+        size_hint: 1, 1
+
+
+    MDCard:
+        size_hint: 0.4,1
+
+        ScreenManager:
+            id: half_screen_manager
+
+            Screen:
+                name: "half_screen_login"
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+
+                MDCard:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                    size_hint: 0.75 ,0.3
+                    pos_hint:{"center_x": 0.5,"center_y": 0.75}
+
+                    Image:
+                        source: 'resources/buslogo.png'
+                        allow_stretch: True
+                        pos_hint:{"center_x": 0.5,"center_y": 0.5}
+
+                MDLabel:
+                    id: login_message
+                    text: "Log-in to book your Ticket!"
+                    size_hint: 0.75, 0.025
+                    halign: "center"
+                    pos_hint:{"center_x": 0.5,"center_y": 0.55}
+
+                MDTextField:
+                    hint_text: "E-mail or username"
+                    id: email_or_username
+                    mode: "fill"
+                    icon_left: "account"
+                    multiline: False
+                    size_hint: 0.625, 0.07
+                    pos_hint:{"center_x":0.5,"center_y":0.46}
+                    hint_text_color_focus: "#f59122"
+                    icon_left_color_focus: "#f59122"
+                    line_color_focus: "#f59122"
+                    text_color_focus: "#f59122"
+
+                MDTextField:
+                    hint_text: "Password"
+                    id: passwd
+                    mode: "fill"
+                    icon_left: "key-variant"
+                    multiline: False
+                    size_hint: 0.625, 0.07
+                    pos_hint: {"center_x":0.5,"center_y":0.38}
+                    password: True
+                    hint_text_color_focus: "#f59122"
+                    text_color_focus: "#f59122"     
+                    icon_left_color_focus: "#f59122"
+                    line_color_focus: "#f59122"
+
+                MDFillRoundFlatButton:
+                    text: "Log in"
+                    font_size: 16
+                    size_hint: 0.625, 0.08
+                    pos_hint:{"center_x":0.5,"center_y":0.27}
+                    md_bg_color: "#f59122"
+                    on_release:
+                        root.login()
+                        app.root.transition.direction = "down"
+
+                Button:
+                    text: "Create new account"
+                    underline: True
+                    font_size: 13
+                    size_hint: 0.5, 0.02
+                    pos_hint:{"center_x":0.5,"center_y":0.2}
+                    background_color: (133/255,225/255,189/255,0)
+                    color: (92/255, 94/255, 94/255,1)
+                    on_release:
+                        root.create_new_account()
+                        app.root.transition.direction = "left"
+
+                MDIconButton:
+                    icon: "database-search"
+                    icon_color: "#9f9f9f"
+                    theme_icon_color: "Custom"
+                    icon_size: "45sp"
+                    pos_hint:{"center_x":0.5,"center_y":0.1}
+                    #on_release: root.go_to_sql()
+
+                MDIconButton:
+                    icon: "language-python"
+                    icon_color: "#9f9f9f"
+                    theme_icon_color: "Custom"
+                    icon_size: "45sp"
+                    pos_hint:{"center_x":0.35,"center_y":0.1}
+                    #on_release: root.go_to_py()
+
+                MDIconButton:
+                    icon: "github"
+                    icon_color: "#9f9f9f"
+                    theme_icon_color: "Custom"
+                    icon_size: "45sp"
+                    pos_hint:{"center_x":0.65,"center_y":0.1}
+                    #on_release: root.go_to_github()
+            Screen:
+                name: "half_screen_verify"
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+
+                MDCard:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                    size_hint: 0.75 ,0.3
+                    pos_hint:{"center_x": 0.5,"center_y": 0.75}
+
+                    Image:
+                        source: 'resources/verify_icon.png'
+                        allow_stretch: True
+                        pos_hint:{"center_x": 0.5,"center_y": 0.5}
+
+                MDLabel:
+                    id: verification_message
+                    text: "Enter the verification code sent to your email below"
+                    size_hint: 0.75, 0.025
+                    halign: "center"
+                    pos_hint:{"center_x": 0.5,"center_y": 0.55}
+
+                Button:
+                    text: "Click here to resend your email"
+                    underline: True
+                    font_size: 13
+                    size_hint: 0.5, 0.02
+                    pos_hint:{"center_x":0.5,"center_y":0.50}
+                    background_color: (133/255,225/255,189/255,0)
+                    color: (92/255, 94/255, 94/255,1)
+                    on_release:
+                        root.send_email()
+
+
+                MDTextField:
+                    hint_text: "Enter 6-digit code"
+                    id: code
+                    mode: "fill"
+                    icon_left: "account"
+                    multiline: False
+                    size_hint: 0.625, 0.07
+                    pos_hint:{"center_x":0.5,"center_y":0.4}
+                    hint_text_color_focus: "#f59122"
+                    icon_left_color_focus: "#f59122"
+                    line_color_focus: "#f59122"
+                    text_color_focus: "#f59122"
+
+                MDFillRoundFlatButton:
+                    text: "Verify"
+                    font_size: 16
+                    size_hint: 0.625, 0.08
+                    pos_hint:{"center_x":0.5,"center_y":0.27}
+                    md_bg_color: "#f59122"
+                    on_release:
+                        root.verify()
+
+                Button:
+                    text: "Back to login"
+                    underline: True
+                    font_size: 13
+                    size_hint: 0.5, 0.02
+                    pos_hint:{"center_x":0.5,"center_y":0.2}
+                    background_color: (133/255,225/255,189/255,0)
+                    color: (92/255, 94/255, 94/255,1)
+                    on_release:
+                        root.reset_verify_screen()

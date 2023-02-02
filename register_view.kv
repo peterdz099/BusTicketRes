@@ -1,0 +1,123 @@
+<RegisterWindow>:
+    name: "register"
+
+    email: email
+    username: username
+    password: passwd
+    repeatedPassword: repeatedPassword
+
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    Image:
+        source: 'resources/register.png'
+        pos_hint:{"center_x": 0.3,"center_y": 0.5}
+        size_hint: 1, 1
+
+    MDCard:
+        canvas:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        size_hint: 0.25,0.3
+        pos_hint:{"center_x": 0.8,"center_y": 0.80}
+
+        Image:
+            source: 'resources/icon.png'
+            allow_stretch: True
+            pos_hint:{"center_x": 0.5,"center_y": 0.5}
+    MDLabel:
+        id: new_account_message
+        text: "Create new account!"
+        size_hint: 0.25, 0.025
+        halign: "center"
+        pos_hint:{"center_x": 0.8,"center_y": 0.61}
+
+
+    MDTextField:
+        id: email
+        hint_text: "E-mail"
+        mode: "fill"
+        icon_left: "email"
+        multiline: False
+        size_hint: 0.25, 0.07
+        pos_hint: {"center_x":0.8,"center_y":0.54}
+        hint_text_color_focus: "#f59122"
+        icon_left_color_focus: "#f59122"
+        line_color_focus: "#f59122"
+        text_color_focus: "#f59122"
+
+
+    MDTextField:
+        id: username
+        hint_text: "Username"
+        mode: "fill"
+        icon_left: "account"
+        multiline: False
+        size_hint: 0.25, 0.07
+        pos_hint: {"center_x":0.8,"center_y":0.46}
+        hint_text_color_focus: "#f59122"
+        icon_left_color_focus: "#f59122"
+        line_color_focus: "#f59122"
+        text_color_focus: "#f59122"
+
+
+
+
+    MDTextField:
+        id: passwd
+        hint_text: "Password"
+        mode: "fill"
+        icon_left: "key-variant"
+        multiline: False
+        size_hint: 0.25, 0.07
+        pos_hint: {"center_x":0.8,"center_y":0.38}
+        password: True
+        hint_text_color_focus: "#f59122"
+        icon_left_color_focus: "#f59122"
+        line_color_focus: "#f59122"
+        text_color_focus: "#f59122"
+
+
+    MDTextField:
+        id: repeatedPassword
+        hint_text: "Confirm Password"
+        mode: "fill"
+        icon_left: "key-variant"
+        multiline: False
+        size_hint: 0.25, 0.07
+        pos_hint: {"center_x":0.8,"center_y":0.3}
+        password: True
+        hint_text_color_focus: "#f59122"
+        icon_left_color_focus: "#f59122"
+        line_color_focus: "#f59122"
+        text_color_focus: "#f59122"
+
+
+    MDFillRoundFlatButton:
+        text: "Submit"
+        font_size: 16
+        size_hint: 0.25, 0.09
+        pos_hint: {"center_x":0.8, "center_y":0.18}
+        md_bg_color: "#f59122"
+        on_release:
+            root.submit()
+            root.manager.transition.direction = "right"
+
+    Button:
+        text: "Back to Login"
+        underline: True
+        font_size: 13
+        size_hint: 0.2, 0.02
+        pos_hint: {"center_x":0.8,"center_y":0.1}
+        background_color: (133/255,225/255,189/255,0)
+        color: (92/255, 94/255, 94/255,1)
+        on_release:
+            root.back_to_login()
+            app.root.transition.direction = "right"
