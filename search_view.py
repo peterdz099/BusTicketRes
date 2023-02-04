@@ -4,10 +4,11 @@ from kivymd.uix.dialog import MDDialog
 from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.pickers import MDDatePicker
 
 
 class SearchWindow(Screen):
-    #date = datetime()
+    date = None
     menu_from = None
     menu_to = None
     counter = 1
@@ -30,6 +31,33 @@ class SearchWindow(Screen):
         self.ids.counter_text.text = str(self.counter)
         self.ids.list_sm.current = "ticket"
         self.ids.list_sm.transition.direction = "right"
+
+    def book_tickets(self):
+        self.dialog_close()
+        self.back_to_ticket()
+        print("Booked")
+
+    def on_cancel(self, instance, value):
+        '''Events called when the "CANCEL" dialog box button is clicked.'''
+
+    def on_save(self, instance, value, date_range):
+        '''
+        Events called when the "OK" dialog box button is clicked.
+
+        :type instance: <kivymd.uix.picker.MDDatePicker object>;
+        :param value: selected date;
+        :type value: <class 'datetime.date'>;
+        :param date_range: list of 'datetime.date' objects in the selected range;
+        :type date_range: <class 'list'>;
+        '''
+
+        self.date = value
+        print(self.date)
+
+    def show_date_picker(self):
+        date_dialog = MDDatePicker(primary_color="#f59122", selector_color="#f59122",text_button_color="black")
+        date_dialog.bind( on_save=self.on_save, on_cancel=self.on_cancel)
+        date_dialog.open()
 
     def load_tickets(self):
         pass
@@ -80,11 +108,6 @@ class SearchWindow(Screen):
             position="center",
             width_mult=4,
         )
-
-    def book_tickets(self):
-        self.dialog_close()
-        self.back_to_ticket()
-        print("Booked")
 
     def show_alert_dialog(self):
         if not self.dialog:

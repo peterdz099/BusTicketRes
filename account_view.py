@@ -11,6 +11,7 @@ class AccountWindow(Screen):
     def log_out(self):
         self.dialog_close()
         sm.get_screen("main").ids.screen_manager.current = "Search"
+        sm.get_screen("main").ids.screen_manager.get_screen("Search").back_to_main()
         sm.get_screen("main").ids.navigation_rail.deselect_item(sm.get_screen("main").ids.search3)
         sm.get_screen("main").ids.navigation_rail.set_current_selected_item(sm.get_screen("main").ids.search1)
         sm.current = "login"
