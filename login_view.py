@@ -30,6 +30,7 @@ class LoginWindow(Screen):
                 if is_pwd_correct(self.password.text, dictionary.get('password')):
                     self.reset()
                     sm.current = "main"
+
                 else:
                     self.ids.login_message.text = "Wrong password"
 

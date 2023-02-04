@@ -1,2 +1,41 @@
 <MainWindow>:
     name: "main"
+    #:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+    MDBoxLayout:
+
+        MDNavigationRail:
+            id: navigation_rail
+            md_bg_color: "#f59122"
+            selected_color_background: (1,1,1,1)
+
+            text_color_item_active: (1,1,1,1)
+
+
+            on_item_release:
+                root.switch_screen(*args)
+
+            MDNavigationRailItem:
+                id: search1
+                text: "Search"
+                icon: "magnify"
+
+
+            MDNavigationRailItem:
+                id: search2
+                text: "Tickets"
+                icon: "ticket-confirmation"
+
+            MDNavigationRailItem:
+                id: search3
+                text: "Account"
+                icon: "account-box"
+
+        ScreenManager:
+            id: screen_manager
+            transition: FadeTransition(duration=.1)
+
+
+
+
+

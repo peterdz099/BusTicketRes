@@ -1,0 +1,37 @@
+<AccountWindow>:
+    name: "Account"
+
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+
+        Image:
+            size_hint: None,None
+            size: 300,300
+            source: 'resources/user_icon.png'
+            pos_hint:{"center_x": 0.5,"center_y":0.75}
+
+        MDLabel:
+            text:" You are logged in as: XYZZZZZ\n\n Until Now You have x ticket booked"
+            font_size: 16
+            text_color: 0,0,0,1
+            pos_hint:{"center_x": 0.5,"center_y":0.5}
+            halign: "center"
+        
+        MDFillRoundFlatButton:
+            text: "Quit"
+            font_size: 16
+            size_hint: 0.25, 0.05
+            pos_hint:{"center_x":0.65,"center_y":0.4}
+            md_bg_color: "#f59122"
+            on_release:
+                root.show_alert_dialog("quit")
+
+
+        MDFillRoundFlatButton:
+            text: "Log out"
+            font_size: 16
+            size_hint: 0.25, 0.05
+            pos_hint:{"center_x":0.35,"center_y":0.4}
+            md_bg_color: "#f59122"
+            on_release:
+                root.show_alert_dialog("Log out")

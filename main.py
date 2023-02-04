@@ -14,15 +14,18 @@ def back():
 
 class MyApp(MDApp):
     def build(self):
-        #Window.borderless= True
+        #Window.borderless = True
         self.theme_cls.theme_style = "Light"
+        self.theme_cls.material_style = "M3"
+
         Builder.load_file('register_view.kv')
         Builder.load_file('login_view.kv')
         Builder.load_file('main_view.kv')
         sm.add_widget(LoginWindow(name="login"))
         sm.add_widget(RegisterWindow(name="register"))
         sm.add_widget(MainWindow(name="main"))
-        sm.current = "login"
+        sm.get_screen("main").on_start()
+        sm.current = "main"
         return sm
 
 
