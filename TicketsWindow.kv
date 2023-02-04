@@ -58,10 +58,19 @@
                                         md_bg_color: 1,1,1,1
                                         pos_hint:{"center_x":0.5,"center_y":0.4}
                                     MDFillRoundFlatButton:
-                                        text: "Back to reservations"
+                                        text: "Back to tickets"
                                         font_size: 16
-                                        size_hint: 0.4, 0.05
-                                        pos_hint:{"center_x":0.5,"center_y":0.08}
+                                        size_hint: 0.2, 0.05
+                                        pos_hint:{"center_x":0.7,"center_y":0.08}
                                         md_bg_color: "#f59122"
                                         on_release:
                                             root.back_to_ticket()
+
+                                    MDFillRoundFlatButton:
+                                        text: "Remove ticket"
+                                        font_size: 16
+                                        size_hint: 0.2, 0.05
+                                        pos_hint:{"center_x":0.3,"center_y":0.08}
+                                        md_bg_color: "#f59122"
+                                        on_release:
+                                            #root.back_to_ticket()

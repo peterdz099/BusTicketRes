@@ -25,7 +25,7 @@ class MyApp(MDApp):
         sm.add_widget(RegisterWindow(name="register"))
         sm.add_widget(MainWindow(name="main"))
         sm.get_screen("main").on_start()
-        sm.current = "main"
+        sm.current = "login"
         return sm
 
 
