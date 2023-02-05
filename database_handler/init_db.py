@@ -53,6 +53,30 @@ class Database:
 
         return max_seats[0][0]-taken_seats[0][0] + 1
 
+    def get_ride_from_ride_id(self, ride_id):
+        get_ride_from_ride_id_query = """
+                                       SELECT * FROM rides WHERE
+                                       ride_id = %s
+                       """
+        city_data = []
+        with self._connection.cursor() as cursor:
+            cursor.execute(get_ride_from_ride_id_query, (ride_id,))
+            temp = cursor.fetchall()
+            for listing in temp:
+                ride_id = listing[0]
+                arrival = listing[1]
+                departure = listing[2]
+                destination = listing[3]
+                src = listing[4]
+                #free_seats = self.get_free_seats(listing[0])
+                price = listing[6]
+
+                item = {"ride_id": ride_id, "arrival": arrival, "departure": departure, "destination": destination,
+                        "src": src,  "price": price}
+
+                city_data.append(item)
+        return city_data
+
     def list_cities(self):
         list_city_query = """
         SELECT city FROM cities

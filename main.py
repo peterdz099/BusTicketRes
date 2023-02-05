@@ -27,9 +27,7 @@ class MyApp(MDApp):
         sm.get_screen("main").on_start()
         sm.current = "login"
         db.create_all()
-
         return sm
-
 
 if __name__ == '__main__':
     Config.set('graphics', 'width', '1000')

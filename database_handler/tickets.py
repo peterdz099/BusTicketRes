@@ -1,5 +1,4 @@
 from database_handler.init_db import Database
-from global_variables import db
 from mysql.connector import Error
 
 

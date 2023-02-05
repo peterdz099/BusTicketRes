@@ -23,14 +23,20 @@ class LoginWindow(Screen):
     def login(self):
         half_screen_manager = self.ids.half_screen_manager
         dictionary = usersResources.select_user(email=self.email_or_username.text, username=self.email_or_username.text)
-        print(dictionary)
 
         if self.email_or_username.text != "" and self.password != "":
             if dictionary and dictionary.get('is_verified') == 1:
                 if is_pwd_correct(self.password.text, dictionary.get('password')):
+
+                    sm.get_screen("main").ids.screen_manager.get_screen("Search").load_dropdown_items()
+                    sm.get_screen("main").ids.screen_manager.get_screen("Search").set_user_id(dictionary.get('id'))
+
+                    sm.get_screen("main").ids.screen_manager.get_screen("Tickets").set_user_id(dictionary.get('id'))
+                    sm.get_screen("main").ids.screen_manager.get_screen("Tickets").load_user_tickets()
+
+                    sm.get_screen("main").ids.screen_manager.get_screen("Account").set_user(dictionary.get('username'))
                     self.reset()
                     sm.current = "main"
-
                 else:
                     self.ids.login_message.text = "Wrong password"
 

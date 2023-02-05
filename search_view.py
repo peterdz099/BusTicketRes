@@ -1,44 +1,56 @@
+import datetime
 from kivy.uix.screenmanager import Screen
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivy.metrics import dp
-from kivymd.app import MDApp
 from kivymd.uix.list import TwoLineAvatarListItem, ImageLeftWidget
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
 
-from global_variables import db
+from global_variables import db, ticketsResources, sm
 
 
 class SearchWindow(Screen):
     date = None
     menu_from = None
     menu_to = None
-    counter = 1
+    counter = 0
+    free_seats = 25
     dialog = None
-    connections = []
+    user_id = None
+    ride_id = None
+
+    def set_user_id(self, user_id):
+        self.user_id = user_id
 
     def go_to_tickets(self):
+        self.ids.book_error.text = ""
         self.ids.search_sm.current = "search_tickets"
         self.ids.search_sm.transition.direction = "down"
 
     def back_to_main(self):
+        self.ids.book_error.text = ""
         self.ids.search_sm.current = "search_main"
         self.ids.search_sm.transition.direction = "up"
+        self.clear_connections()
 
     def go_to_details(self):
         self.ids.list_sm.current = "ticket_details"
         self.ids.list_sm.transition.direction = "left"
 
     def back_to_ticket(self):
-        self.counter = 1
+        self.counter = 0
         self.ids.counter_text.text = str(self.counter)
         self.ids.list_sm.current = "ticket"
         self.ids.list_sm.transition.direction = "right"
 
     def book_tickets(self):
+        ticketsResources.add_ticket(self.ride_id, self.user_id, self.counter)
+        sm.get_screen("main").ids.screen_manager.get_screen("Tickets").clear_user_tickets()
+        sm.get_screen("main").ids.screen_manager.get_screen("Tickets").load_user_tickets()
         self.dialog_close()
         self.back_to_ticket()
+        self.back_to_main()
         print("Booked")
 
     def on_cancel(self, instance, value):
@@ -59,31 +71,53 @@ class SearchWindow(Screen):
         print(self.date)
 
     def show_date_picker(self):
-        date_dialog = MDDatePicker(primary_color="#f59122", selector_color="#f59122",text_button_color="black")
-        date_dialog.bind( on_save=self.on_save, on_cancel=self.on_cancel)
+
+        min_date = datetime.date(2023, 2, 5)
+        max_date = datetime.date(2023, 2, 8)
+
+        date_dialog = MDDatePicker(min_date=min_date, max_date=max_date, primary_color="#f59122",
+                                   selector_color="#f59122",
+                                   text_button_color="black")
+        date_dialog.bind(on_save=self.on_save, on_cancel=self.on_cancel)
         date_dialog.open()
+
+    def clear_connections(self):
+        self.ids.scroll_connections.clear_widgets()
 
     def load_connections(self):
         source = self.ids.drop_from.text
         destination = self.ids.drop_to.text
-        self.connections = db.list_connections(source, destination, str(self.date))
-        image_src = "https://imgs.search.brave.com/HMdj6Gmuu4WVD2xkPDeiTEly-cM83jR8-6q-yeNO1Ak/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly9kbWNw/b2xhbmQuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDE3LzAy/L2tyYWtvdzMuanBn"
-        if self.connections:
-            for connection in self.connections:
-                self.ids.scroll.add_widget(TwoLineAvatarListItem(
+        connections = db.list_connections(source, destination, str(self.date))
+        image_src = db.get_city_img_link(destination)
+        if connections:
+            for connection in connections:
+                self.ids.scroll_connections.add_widget(TwoLineAvatarListItem(
                     ImageLeftWidget(
                         source=f"{image_src}"),
                     text=f"{connection.get('src')} - {connection.get('destination')}",
                     secondary_text=f"{connection.get('departure')}",
-                    on_release=(lambda x: self.go_to_details())
+                    id=f"{connections.index(connection)}",
+                    on_release=(lambda x: self.load_connection_details(connections[int(x.id)], image_src))
                 ))
             self.go_to_tickets()
 
-        elif len(self.connections) == 0:
+        elif self.date is None:
+            self.ids.book_error.text = "Select Date"
+
+        elif len(connections) == 0:
             self.ids.book_error.text = "No connections on this day"
 
-    def load_ticket_details(self):
-        pass
+    def load_connection_details(self, connection, image_src):
+        self.ride_id = connection.get('ride_id')
+        self.go_to_details()
+        self.ids.ticket_details_img.source = image_src
+        self.ids.connection_details.text = f"Beginning:{connection.get('src')}\n\n" \
+                                           f"Destination: {connection.get('destination')}\n\n" \
+                                           f"Price(1 Ticket): {connection.get('price')}\n\n" \
+                                           f"Departure date: {connection.get('departure')}\n\n" \
+                                           f"Arrival Date: {connection.get('arrival')}\n\n" \
+                                           f"Number of free Seats: {connection.get('free_seats')}"
+        self.free_seats = connection.get('free_seats')
 
     def set_item_from(self, text_item):
         self.ids.drop_from.text = text_item
@@ -94,9 +128,7 @@ class SearchWindow(Screen):
         self.menu_to.dismiss()
 
     def load_dropdown_items(self):
-
         cities = db.list_cities()
-        print(cities)
         self.ids.drop_from.text = cities[0]
         self.ids.drop_to.text = cities[1]
 
@@ -131,34 +163,36 @@ class SearchWindow(Screen):
         )
 
     def show_alert_dialog(self):
-        if not self.dialog:
-            self.dialog = MDDialog(
-                text=f"Are you sure You want to book {self.counter} ticets?",
-                buttons=[
-                    MDFlatButton(
-                        text="CANCEL",
-                        theme_text_color="Custom",
-                        md_bg_color="#f59122",
-                        text_color=(1, 1, 1, 1),
-                        on_press=lambda x: self.dialog_close(),
-                    ),
-                    MDFlatButton(
-                        text="Yes",
-                        md_bg_color="#f59122",
-                        theme_text_color="Custom",
-                        text_color=(1,1,1,1),
-                        on_press=lambda x: self.book_tickets(),
-                    ),
-                ],
-            )
-        self.dialog.open()
+        if self.counter > 0:
+            if not self.dialog:
+                self.dialog = MDDialog(
+                    text=f"Are you sure You want to book {self.counter} tickets?",
+                    buttons=[
+                        MDFlatButton(
+                            text="CANCEL",
+                            theme_text_color="Custom",
+                            md_bg_color="#f59122",
+                            text_color=(1, 1, 1, 1),
+                            on_press=lambda x: self.dialog_close(),
+                        ),
+                        MDFlatButton(
+                            text="YES",
+                            md_bg_color="#f59122",
+                            theme_text_color="Custom",
+                            text_color=(1, 1, 1, 1),
+                            on_press=lambda x: self.book_tickets(),
+                        ),
+                    ],
+                )
+            self.dialog.open()
 
     def dialog_close(self):
         self.dialog.dismiss(force=True)
 
     def increase(self):
-        self.counter += 1
-        self.ids['counter_text'].text = str(self.counter)
+        if self.counter < self.free_seats:
+            self.counter += 1
+            self.ids['counter_text'].text = str(self.counter)
 
     def decrease(self):
         if self.counter <= 1:
@@ -166,6 +200,3 @@ class SearchWindow(Screen):
         else:
             self.counter -= 1
             self.ids['counter_text'].text = str(self.counter)
-
-
-

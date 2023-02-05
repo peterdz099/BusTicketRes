@@ -118,7 +118,7 @@
                                 size_hint: 1,1
                                 MDList:
                                     md_bg_color: 1,1,1,1
-                                    id: scroll
+                                    id: scroll_connections
                                     radius: [10, 10, 10, 10]
                                     halign: "center"
                                     size_hint: 1,1
@@ -134,13 +134,13 @@
                                         size_hint: 0.6, 0.3
                                         md_bg_color: 1,1,1,1
                                         pos_hint:{"center_x":0.5,"center_y":0.82}
-                                        Image:
+                                        AsyncImage:
                                             id: ticket_details_img
-                                            source: 'resources/login.png'
+                                            #source: 'resources/login.png'
                                             #keep_ratio: False
                                             allow_stretch: True
                                     MDLabel:
-                                        text: "Beginning:\n\nDestination:\n\nPrice(1 Ticket):\n\nDeparture date\n\nArrival Date:\n\nNumber of free Seats:"
+                                        id: connection_details
                                         text_color: 0,0,0,1
                                         halign: "center"
                                         size_hint: 0.6, 0.43
@@ -166,7 +166,7 @@
                                             MDLabel:
                                                 id: counter_text
                                                 font_style: 'Subtitle2'
-                                                text: '1'
+                                                text: '0'
                                                 halign: 'center'
 
                                             MDBoxLayout:
