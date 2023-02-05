@@ -66,7 +66,7 @@ class SearchWindow(Screen):
         :param date_range: list of 'datetime.date' objects in the selected range;
         :type date_range: <class 'list'>;
         '''
-
+        self.date = value
 
     def show_date_picker(self):
 
