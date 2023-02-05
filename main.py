@@ -26,7 +26,7 @@ class MyApp(MDApp):
         sm.add_widget(MainWindow(name="main"))
         sm.get_screen("main").on_start()
         sm.current = "login"
-        db.create_all()
+        #db.create_all()
         return sm
 
 if __name__ == '__main__':

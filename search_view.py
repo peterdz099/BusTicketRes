@@ -7,6 +7,7 @@ from kivymd.uix.list import TwoLineAvatarListItem, ImageLeftWidget
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
 
+from database_handler.init_db import Database
 from global_variables import db, ticketsResources, sm
 
 
@@ -33,6 +34,9 @@ class SearchWindow(Screen):
         self.ids.search_sm.current = "search_main"
         self.ids.search_sm.transition.direction = "up"
         self.clear_connections()
+        self.ids.connection_details.text = ""
+        self.ids.ticket_details_img.source = ""
+
 
     def go_to_details(self):
         self.ids.list_sm.current = "ticket_details"
@@ -40,6 +44,8 @@ class SearchWindow(Screen):
 
     def back_to_ticket(self):
         self.counter = 0
+        self.ids.connection_details.text = ""
+        self.ids.ticket_details_img.source = ""
         self.ids.counter_text.text = str(self.counter)
         self.ids.list_sm.current = "ticket"
         self.ids.list_sm.transition.direction = "right"
@@ -86,6 +92,7 @@ class SearchWindow(Screen):
     def load_connections(self):
         source = self.ids.drop_from.text
         destination = self.ids.drop_to.text
+        db = Database()
         connections = db.list_connections(source, destination, str(self.date))
         image_src = db.get_city_img_link(destination)
         if connections:

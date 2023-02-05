@@ -43,6 +43,9 @@ class TicketsWindow(Screen):
         elif user_tickets is None:
             self.ids.scroll_connections.add_widget(OneLineListItem(
                 text=f"You don't have any tickets"))
+        elif len(user_tickets) == 0:
+            self.ids.scroll_user_tickets.add_widget(OneLineListItem(text=f"You don't have any tickets"))
+
 
     def load_ticket_details(self, connection, image_src, seat_no, ticket_id, ride_id):
         self.ids.ticket_details_img.source = image_src
