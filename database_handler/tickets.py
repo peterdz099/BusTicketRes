@@ -9,7 +9,7 @@ class Tickets:
         self.connection = database.get_connection()
 
     # THO CHYBA MUSI BYC WYKONYWANE DLA KAZDEGO BILETU ALE TO RACZEJ W PETLI SIE JEBNIE
-    def add_ticket(self, ride_id, user_id, seat_no):
+    def add_ticket(self, ride_id, user_id, seats):
         add_ticket_query = """
                         INSERT IGNORE INTO ticket 
                         (ticket_id, ride_id, user_id, seat_no, cost) 
@@ -20,9 +20,16 @@ class Tickets:
                         SELECT price FROM rides WHERE
                         ride_id = %s 
                         """
+        get_max_seats_query = """
+                       SELECT seats FROM rides WHERE
+                       ride_id = %s
+                       """
+        get_taken_seats_query = """
+                        SELECT seat_no FROM ticket WHERE
+                        ride_id = %s
+        """
 
         cost = 0
-        ticket_id = str(ride_id) + '-' + str(seat_no)
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(get_ticket_cost_query, (ride_id,))
@@ -35,14 +42,45 @@ class Tickets:
 
         except Error as e:
             print("Błąd przy znajdowaniu kosztu biletu")
+            return
 
-        ticket_values = (ticket_id, ride_id, user_id, seat_no, cost)
+        seat_numbers = []
+        max_seats = 0
+        temp = None
+        with self.connection.cursor() as cursor:
+            cursor.execute(get_max_seats_query, (ride_id,))
+            max_seats = cursor.fetchall()
+            cursor.execute(get_taken_seats_query, (ride_id,))
+            temp = cursor.fetchall()
+
+
+        for seat in range(max_seats[0][0] + 1):
+            seat_numbers.append(seat)
+
+        avaliable_seats = []
+        if temp == []:
+            avaliable_seats = seat_numbers
+        else:
+            temp2 = []
+            for field in temp:
+                temp2.append(field[0])
+
+            for seat in seat_numbers:
+                if seat not in temp2:
+                    avaliable_seats.append(seat)
+
+
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(add_ticket_query, ticket_values)
+                for i in range(seats):
+                    ticket_id = str(ride_id) + '-' + str(avaliable_seats[i])
+                    ticket_values = (ticket_id, ride_id, user_id, avaliable_seats[i], cost)
+                    cursor.execute(add_ticket_query, ticket_values)
                 self.connection.commit()
-        except Error as e:
-            print(e)
+        except:
+            self.connection.rollback()
+            print("error with ticket selection")
+            return
 
     def remove_ticket(self, ticket_id, ride_id, user_id, seat_no):
         remove_ticket_query = """
@@ -59,10 +97,11 @@ class Tickets:
                 cursor.execute(remove_ticket_query, ticket_values)
                 self.connection.commit()
         except Error as e:
-            print(e)
+            self.connection.rollback()
 
-"""if __name__ == "__main__":
+
+if __name__ == "__main__":
     db = Database()
     db.create_all()
     tickets = Tickets(db)
-    tickets.add_ticket(4,1,0)"""
+    tickets.add_ticket('1-WaKrk-202302101003',1,12)
