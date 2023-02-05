@@ -3,8 +3,11 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivy.metrics import dp
 from kivymd.app import MDApp
+from kivymd.uix.list import TwoLineAvatarListItem, ImageLeftWidget
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
+
+from global_variables import db
 
 
 class SearchWindow(Screen):
@@ -13,6 +16,7 @@ class SearchWindow(Screen):
     menu_to = None
     counter = 1
     dialog = None
+    connections = []
 
     def go_to_tickets(self):
         self.ids.search_sm.current = "search_tickets"
@@ -59,8 +63,24 @@ class SearchWindow(Screen):
         date_dialog.bind( on_save=self.on_save, on_cancel=self.on_cancel)
         date_dialog.open()
 
-    def load_tickets(self):
-        pass
+    def load_connections(self):
+        source = self.ids.drop_from.text
+        destination = self.ids.drop_to.text
+        self.connections = db.list_connections(source, destination, str(self.date))
+        image_src = "https://imgs.search.brave.com/HMdj6Gmuu4WVD2xkPDeiTEly-cM83jR8-6q-yeNO1Ak/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly9kbWNw/b2xhbmQuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDE3LzAy/L2tyYWtvdzMuanBn"
+        if self.connections:
+            for connection in self.connections:
+                self.ids.scroll.add_widget(TwoLineAvatarListItem(
+                    ImageLeftWidget(
+                        source=f"{image_src}"),
+                    text=f"{connection.get('src')} - {connection.get('destination')}",
+                    secondary_text=f"{connection.get('departure')}",
+                    on_release=(lambda x: self.go_to_details())
+                ))
+            self.go_to_tickets()
+
+        elif len(self.connections) == 0:
+            self.ids.book_error.text = "No connections on this day"
 
     def load_ticket_details(self):
         pass
@@ -74,17 +94,18 @@ class SearchWindow(Screen):
         self.menu_to.dismiss()
 
     def load_dropdown_items(self):
-        cities = ['Bydgoszcz', 'Kraków', 'Rzeszów', 'Tarnów', 'Toruń', 'Warszawa', 'Wrocław']
 
-        self.ids.drop_from.text = cities[0].upper()
-        self.ids.drop_to.text = cities[1].upper()
+        cities = db.list_cities()
+        print(cities)
+        self.ids.drop_from.text = cities[0]
+        self.ids.drop_to.text = cities[1]
 
         menu_items_from = [
             {
                 "viewclass": "OneLineListItem",
-                "text": f"{i.upper()}",
+                "text": f"{i}",
                 "height": dp(56),
-                "on_release": lambda x=f"{i.upper()}": self.set_item_from(x),
+                "on_release": lambda x=f"{i}": self.set_item_from(x),
             } for i in cities
         ]
         self.menu_from = MDDropdownMenu(
@@ -96,9 +117,9 @@ class SearchWindow(Screen):
         menu_items_to = [
             {
                 "viewclass": "OneLineListItem",
-                "text": f"{i.upper()}",
+                "text": f"{i}",
                 "height": dp(56),
-                "on_release": lambda x=f"{i.upper()}": self.set_item_to(x),
+                "on_release": lambda x=f"{i}": self.set_item_to(x),
             } for i in cities
         ]
 

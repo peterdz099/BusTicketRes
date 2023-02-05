@@ -7,6 +7,14 @@
 
             Screen:
                 name: "search_main"
+                MDLabel:
+                    id: book_error
+                    size_hint: 0.7,0.05
+                    font_size: 14
+                    halign: "center"
+                    valign: "center"
+                    md_bg_color: 1,1,1,1
+                    pos_hint:{"center_x":0.5,"center_y":0.87}
                 MDCard:
                     md_bg_color: "#f59122"
                     size_hint: 0.7,0.2
@@ -59,6 +67,7 @@
                             icon_color: 1,1,1,1
                             on_release: root.show_date_picker()
 
+
                 MDFillRoundFlatButton:
                     text: "Book tickets"
                     font_size: 16
@@ -66,7 +75,7 @@
                     pos_hint:{"center_x":0.5,"center_y":0.57}
                     md_bg_color: "#f59122"
                     on_release:
-                        root.go_to_tickets()
+                        root.load_connections()
 
 
                 Image:
@@ -113,13 +122,8 @@
                                     radius: [10, 10, 10, 10]
                                     halign: "center"
                                     size_hint: 1,1
-                                    OneLineListItem:
-                                        text: "DUPSKO"
 
-                                        on_release:
-                                            root.go_to_details()
-                                    OneLineListItem:
-                                        text: "XD"
+
 
                         Screen:
                             name: "ticket_details"

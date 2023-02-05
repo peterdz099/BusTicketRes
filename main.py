@@ -5,7 +5,7 @@ from kivymd.app import MDApp
 from login_view import LoginWindow
 from main_view import MainWindow
 from register_view import RegisterWindow
-from global_variables import sm
+from global_variables import sm, db
 
 
 def back():
@@ -26,6 +26,8 @@ class MyApp(MDApp):
         sm.add_widget(MainWindow(name="main"))
         sm.get_screen("main").on_start()
         sm.current = "login"
+        db.create_all()
+
         return sm
 
 
