@@ -1,0 +1,76 @@
+<TicketsWindow>:
+    name: "Tickets"
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+        ScreenManager:
+            Screen:
+                name: "my_tickets"
+                MDLabel:
+                    text: "Browse your reservations"
+                    md_bg_color: 1,1,1,1
+                    halign: "center"
+                    size_hint: 0.4,0.1
+                    pos_hint: {"center_x": 0.5, "center_y": 0.925}
+                MDCard:
+                    md_bg_color: "#f59122"
+                    orientation: "vertical"
+                    padding: "8dp"
+                    size_hint: 0.5, 0.75
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    ScreenManager:
+                        id: tickets_sm
+                        Screen:
+                            name: "ticket"
+                            ScrollView:
+                                size_hint: 1,1
+                                MDList:
+                                    md_bg_color: 1,1,1,1
+                                    id: scroll
+                                    radius: [10, 10, 10, 10]
+                                    halign: "center"
+                                    size_hint: 1,1
+                                    OneLineListItem:
+                                        text: "DUPSKO"
+                                        on_release:
+                                            root.go_to_ticket()
+                                    OneLineListItem:
+                                        text: "XD"
+
+                        Screen:
+                            name: "ticket_details"
+                            MDCard:
+                                md_bg_color: 1,1,1,1
+                                FloatLayout:
+                                    MDCard:
+                                        size_hint: 0.6, 0.3
+                                        md_bg_color: 1,1,1,1
+                                        pos_hint:{"center_x":0.5,"center_y":0.82}
+                                        Image:
+                                            id: ticket_details_img
+                                            source: 'resources/login.png'
+                                            #keep_ratio: False
+                                            allow_stretch: True
+                                    MDLabel:
+                                        text: "Beginning:\n\nDestination:\n\nReservation ID:\n\nNumber of tickets:\n\nDeparture date\n\nArrival Date:\n\nSeats:"
+                                        text_color: 0,0,0,1
+                                        halign: "center"
+                                        size_hint: 0.6, 0.53
+                                        md_bg_color: 1,1,1,1
+                                        pos_hint:{"center_x":0.5,"center_y":0.4}
+                                    MDFillRoundFlatButton:
+                                        text: "Back to tickets"
+                                        font_size: 16
+                                        size_hint: 0.2, 0.05
+                                        pos_hint:{"center_x":0.7,"center_y":0.08}
+                                        md_bg_color: "#f59122"
+                                        on_release:
+                                            root.back_to_ticket()
+
+                                    MDFillRoundFlatButton:
+                                        text: "Remove ticket"
+                                        font_size: 16
+                                        size_hint: 0.2, 0.05
+                                        pos_hint:{"center_x":0.3,"center_y":0.08}
+                                        md_bg_color: "#f59122"
+                                        on_release:
+                                            #root.back_to_ticket()

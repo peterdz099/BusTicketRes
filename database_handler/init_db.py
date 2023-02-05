@@ -75,11 +75,7 @@ class Database:
             cursor.execute(list_connections_query, connection_values)
             temp = cursor.fetchall()
 
-
-
-
         for listing in temp:
-
             ride_id = listing[0]
             arrival = listing[1]
             departure = listing[2]
