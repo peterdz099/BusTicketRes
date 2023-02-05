@@ -28,6 +28,21 @@ class Tickets:
                         SELECT seat_no FROM ticket WHERE
                         ride_id = %s
         """
+        get_departure_time_query = """
+                        SELECT NOW() < departure FROM rides WHERE
+                        ride_id = %s"""
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(get_departure_time_query, (ride_id,))
+                temp = cursor.fetchall()
+                if temp[0][0] != 1:
+                    print('Autobus juz odjechał')
+                    cursor.close()
+                    return
+
+        except Error as e:
+            print("Sprawdz czy autobus juz nie odjachal")
+            return
 
         cost = 0
         try:
@@ -125,4 +140,4 @@ if __name__ == "__main__":
     db = Database()
 
     tickets = Tickets(db)
-    print(tickets.list_user_tickets(1))
+    (tickets.add_ticket('1-WaKrk-202302101003',1,1))
