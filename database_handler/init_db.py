@@ -43,6 +43,7 @@ class Database:
             max_seats = cursor.fetchall()
 
         return max_seats[0][0]-taken_seats[0][0]
+
     def list_cities(self):
         list_city_query = """
         SELECT city FROM cities
@@ -64,7 +65,7 @@ class Database:
         src = %s
         AND destination = %s
         AND date(departure) = %s
-        AND departure < NOW()
+        AND departure > NOW()
         """
 
         connections_list = []
@@ -81,10 +82,11 @@ class Database:
             departure = listing[2]
             destination = listing[3]
             src = listing[4]
-            seats = listing[5]
+            free_seats = self.get_free_seats(listing[0])
             price = listing[6]
+
             item = {"ride_id": ride_id, "arrival": arrival, "departure": departure, "destination": destination,
-                    "src": src, "seats": seats, "price": price}
+                    "src": src, "free_seats": free_seats, "price": price}
 
             connections_list.append(item)
 
@@ -211,5 +213,6 @@ class Database:
 if __name__ == "__main__":
     xd = Database()
     xd.create_all()
-    print(xd.get_free_seats(1))
+    print("xd")
+    print(xd.list_connections("Kraków", "Warszawa", '2023-02-10'))
 
