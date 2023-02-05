@@ -99,9 +99,30 @@ class Tickets:
         except:
             self.connection.rollback()
 
+    def list_user_tickets(self, user_id):
+        list_user_tickets_query = """
+                                    SELECT * FROM ticket WHERE
+                                    user_id = %s"""
+        temp = None
+        with self.connection.cursor() as cursor:
+            cursor.execute(list_user_tickets_query, (user_id,))
+            temp = cursor.fetchall()
+        ticket_listing = []
+        for listing in temp:
+            ticket_id = listing[0]
+            ride_id = listing[1]
+            seat_no = listing[3]
+            price = listing[4]
+
+            item = {"ticket_id": ticket_id, "ride_id": ride_id, "seat_no": seat_no,
+                    "price": price}
+
+            ticket_listing.append(item)
+
+        return ticket_listing
 
 if __name__ == "__main__":
     db = Database()
-    db.create_all()
+
     tickets = Tickets(db)
-    tickets.add_ticket('1-WaKrk-202302101003',1,12)
+    print(tickets.list_user_tickets(1))
