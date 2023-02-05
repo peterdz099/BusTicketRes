@@ -26,6 +26,16 @@ class Database:
     def close_connection(self):
         self._connection.close()
 
+    def get_city_img_link(self, city):
+        get_city_link_query = """
+                               SELECT img_link FROM cities WHERE
+                               city=%s"""
+        with self._connection.cursor() as cursor:
+            cursor.execute(get_city_link_query, (city,))
+            temp = cursor.fetchall()
+            return temp[0][0]
+
+
     def get_free_seats(self, ride_id):
         get_max_seats_query = """
                                SELECT seats FROM rides WHERE
@@ -42,7 +52,7 @@ class Database:
             cursor.execute(get_max_seats_query, (ride_id,))
             max_seats = cursor.fetchall()
 
-        return max_seats[0][0]-taken_seats[0][0]
+        return max_seats[0][0]-taken_seats[0][0] + 1
 
     def list_cities(self):
         list_city_query = """
@@ -213,6 +223,8 @@ class Database:
 if __name__ == "__main__":
     xd = Database()
     xd.create_all()
-    print("xd")
+
     print(xd.list_connections("Kraków", "Warszawa", '2023-02-10'))
+    print(xd.get_city_img_link("Kraków"))
+    print(xd.get_free_seats('1-WaKrk-202302101003'))
 

@@ -96,7 +96,7 @@ class Tickets:
             with self.connection.cursor() as cursor:
                 cursor.execute(remove_ticket_query, ticket_values)
                 self.connection.commit()
-        except Error as e:
+        except:
             self.connection.rollback()
 
 
