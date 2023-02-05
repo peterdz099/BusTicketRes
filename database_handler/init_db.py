@@ -1,3 +1,4 @@
+import datetime
 import os
 from mysql.connector import connect
 
@@ -20,6 +21,57 @@ class Database:
             database='pdziula'
         )
 
+    def update_db(self):
+        select_finished_courses_query = """
+                                        SELECT * FROM rides WHERE
+                                        arrival > NOW()
+                                        AND date(arrival) = date(NOW())
+                                        """
+
+        insert_into_rides_query = """
+                                INSERT IGNORE INTO rides 
+                                (ride_id, arrival, departure, destination, src, seats, price) VALUES
+                                (%s, %s, %s, %s, %s, %s, %s)"""
+
+        with self._connection.cursor() as cursor:
+            cursor.execute(select_finished_courses_query)
+            temp = cursor.fetchall()
+            try:
+                for listing in temp:
+
+                    arrival = listing[1] + datetime.timedelta(weeks=1)
+                    departure = listing[2] + datetime.timedelta(weeks=1)
+
+                    ride_id = listing[0]
+                    sub_str = "-"
+                    occurrence = 2
+
+                    # Finding nth occurrence of substring
+                    val = -1
+                    for i in range(0, occurrence):
+                        val = ride_id.find(sub_str, val + 1)
+                    id = ride_id[:val+1]
+                    temp = str(arrival)
+                    temp = temp[:-2]
+                    temp = temp.replace("-", '')
+                    temp = temp.replace(' ', '')
+                    temp = temp.replace(':', '')
+                    ride_id = id + temp
+                    destination = listing[3]
+                    src = listing[4]
+                    seats = listing[5]
+                    price = listing[6]
+                    values = (ride_id, arrival, departure, destination, src, seats, price)
+                    cursor.execute(insert_into_rides_query, values)
+                self._connection.commit()
+            except:
+                self._connection.close()
+
+
+
+
+
+
     def get_connection(self):
         return self._connection
 
@@ -34,6 +86,7 @@ class Database:
             cursor.execute(get_city_link_query, (city,))
             temp = cursor.fetchall()
             return temp[0][0]
+
 
     def get_free_seats(self, ride_id):
         get_max_seats_query = """
@@ -245,10 +298,11 @@ class Database:
 
 if __name__ == "__main__":
     xd = Database()
-    xd.create_all()
+    #xd.create_all()
 
-    print(xd.list_connections("Kraków", "Warszawa", '2023-02-10'))
+    """print(xd.list_connections("Kraków", "Warszawa", '2023-02-10'))
     print(xd.list_connections("Kraków", "Warszawa", '2023-02-10'))
     print(xd.get_city_img_link("Kraków"))
-    print(xd.get_free_seats('1-WaKrk-202302101003'))
+    print(xd.get_free_seats('1-WaKrk-202302101003'))"""
+    (xd.update_db())
 

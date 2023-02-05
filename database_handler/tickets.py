@@ -36,7 +36,7 @@ class Tickets:
                 temp = cursor.fetchall()
                 if temp[0][0] != 1:
                     print('Autobus juz odjechał')
-                    cursor.close()
+                    self.connection.rollback()
                     return
 
         except Error as e:
@@ -137,6 +137,6 @@ class Tickets:
 
 if __name__ == "__main__":
     db = Database()
-
+    db.create_all()
     tickets = Tickets(db)
-    (tickets.add_ticket('1-WaKrk-202302101003',1,1))
+    #(tickets.add_ticket('1-WaKrk-202302101003',1,22))
