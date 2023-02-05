@@ -35,7 +35,6 @@ class Database:
             temp = cursor.fetchall()
             return temp[0][0]
 
-
     def get_free_seats(self, ride_id):
         get_max_seats_query = """
                                SELECT seats FROM rides WHERE
@@ -224,6 +223,7 @@ if __name__ == "__main__":
     xd = Database()
     xd.create_all()
 
+    print(xd.list_connections("Kraków", "Warszawa", '2023-02-10'))
     print(xd.list_connections("Kraków", "Warszawa", '2023-02-10'))
     print(xd.get_city_img_link("Kraków"))
     print(xd.get_free_seats('1-WaKrk-202302101003'))
