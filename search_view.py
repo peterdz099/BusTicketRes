@@ -67,17 +67,16 @@ class SearchWindow(Screen):
         :type date_range: <class 'list'>;
         '''
 
-        self.date = value
-        print(self.date)
 
     def show_date_picker(self):
 
-        min_date = datetime.date(2023, 2, 5)
-        max_date = datetime.date(2023, 2, 8)
+        min_date = datetime.date.today()
+        max_date = datetime.date(2023, 2, 17)
 
-        date_dialog = MDDatePicker(min_date=min_date, max_date=max_date, primary_color="#f59122",
+        date_dialog = MDDatePicker(primary_color="#f59122",
                                    selector_color="#f59122",
                                    text_button_color="black")
+
         date_dialog.bind(on_save=self.on_save, on_cancel=self.on_cancel)
         date_dialog.open()
 
