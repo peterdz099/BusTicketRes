@@ -52,6 +52,8 @@ class SearchWindow(Screen):
         self.ids.list_sm.transition.direction = "right"
 
     def book_tickets(self):
+
+        ticketsResources = Tickets(db)
         msg = ticketsResources.add_ticket(self.ride_id, self.user_id, self.counter)
 
         sm.get_screen("main").ids.screen_manager.get_screen("Tickets").clear_user_tickets()
@@ -172,29 +174,29 @@ class SearchWindow(Screen):
             width_mult=4,
         )
 
-    def show_alert_dialog(self):
+    def show_alert_dialog(self,):
         if self.counter > 0:
-            if not self.dialog:
-                self.dialog = MDDialog(
-                    text=f"Are you sure You want to book {self.counter} tickets?",
-                    buttons=[
-                        MDFlatButton(
-                            text="CANCEL",
-                            theme_text_color="Custom",
-                            md_bg_color="#f59122",
-                            text_color=(1, 1, 1, 1),
-                            on_press=lambda x: self.dialog_close(),
-                        ),
-                        MDFlatButton(
-                            text="YES",
-                            md_bg_color="#f59122",
-                            theme_text_color="Custom",
-                            text_color=(1, 1, 1, 1),
-                            on_press=lambda x: self.book_tickets(),
-                        ),
-                    ],
-                )
-            self.dialog.open()
+
+            self.dialog = MDDialog(
+                text=f"Are you sure You want to book {self.ids['counter_text'].text} tickets?",
+                buttons=[
+                    MDFlatButton(
+                        text="CANCEL",
+                        theme_text_color="Custom",
+                        md_bg_color="#f59122",
+                        text_color=(1, 1, 1, 1),
+                        on_press=lambda x: self.dialog_close(),
+                    ),
+                    MDFlatButton(
+                        text="YES",
+                        md_bg_color="#f59122",
+                        theme_text_color="Custom",
+                        text_color=(1, 1, 1, 1),
+                        on_press=lambda x: self.book_tickets(),
+                    ),
+                ],
+            )
+        self.dialog.open()
 
     def dialog_close(self):
         self.dialog.dismiss(force=True)
