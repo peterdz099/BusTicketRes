@@ -203,7 +203,7 @@ class SearchWindow(Screen):
         self.dialog.dismiss(force=True)
 
     def increase(self):
-        if self.counter <= self.free_seats:
+        if self.counter < self.free_seats:
             self.counter += 1
             self.ids['counter_text'].text = str(self.counter)
 
