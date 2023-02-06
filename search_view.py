@@ -9,7 +9,7 @@ from kivymd.uix.pickers import MDDatePicker
 
 from database_handler.init_db import Database
 from database_handler.tickets import Tickets
-from global_variables import db, ticketsResources, sm
+from global_variables import sm
 
 
 class SearchWindow(Screen):
@@ -21,6 +21,7 @@ class SearchWindow(Screen):
     dialog = None
     user_id = None
     ride_id = None
+    db = Database()
 
     def set_user_id(self, user_id):
         self.user_id = user_id
@@ -52,9 +53,9 @@ class SearchWindow(Screen):
         self.ids.list_sm.transition.direction = "right"
 
     def book_tickets(self):
-
-        #ticketsResources = Tickets(db)
-        msg = ticketsResources.add_ticket(self.ride_id, self.user_id, self.counter)
+        self.db = Database()
+        ticketsRes = Tickets(self.db)
+        msg = ticketsRes.add_ticket(self.ride_id, self.user_id, self.counter)
 
         sm.get_screen("main").ids.screen_manager.get_screen("Tickets").clear_user_tickets()
         sm.get_screen("main").ids.screen_manager.get_screen("Tickets").load_user_tickets()
@@ -98,9 +99,9 @@ class SearchWindow(Screen):
     def load_connections(self):
         source = self.ids.drop_from.text
         destination = self.ids.drop_to.text
-        db = Database()
-        connections = db.list_connections(source, destination, str(self.date))
-        image_src = db.get_city_img_link(destination)
+        self.db = Database()
+        connections = self.db.list_connections(source, destination, str(self.date))
+        image_src = self.db.get_city_img_link(destination)
         if connections:
             for connection in connections:
                 self.ids.scroll_connections.add_widget(TwoLineAvatarListItem(
@@ -140,7 +141,7 @@ class SearchWindow(Screen):
         self.menu_to.dismiss()
 
     def load_dropdown_items(self):
-        cities = db.list_cities()
+        cities = self.db.list_cities()
         self.ids.drop_from.text = cities[0]
         self.ids.drop_to.text = cities[1]
 
