@@ -93,8 +93,9 @@ class Tickets:
                 self.connection.commit()
         except:
             self.connection.rollback()
+            s = "error with ticket selection"
             print("error with ticket selection")
-            return
+            return s
 
     def remove_ticket(self, ticket_id, ride_id, user_id, seat_no):
         remove_ticket_query = """

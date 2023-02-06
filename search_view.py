@@ -8,6 +8,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
 
 from database_handler.init_db import Database
+from database_handler.tickets import Tickets
 from global_variables import db, ticketsResources, sm
 
 
@@ -51,13 +52,16 @@ class SearchWindow(Screen):
         self.ids.list_sm.transition.direction = "right"
 
     def book_tickets(self):
-        ticketsResources.add_ticket(self.ride_id, self.user_id, self.counter)
+        msg = ticketsResources.add_ticket(self.ride_id, self.user_id, self.counter)
+
         sm.get_screen("main").ids.screen_manager.get_screen("Tickets").clear_user_tickets()
         sm.get_screen("main").ids.screen_manager.get_screen("Tickets").load_user_tickets()
         self.dialog_close()
         self.back_to_ticket()
         self.back_to_main()
-        print("Booked")
+        if msg is not None:
+            self.ids.book_error.text = msg
+
 
     def on_cancel(self, instance, value):
         '''Events called when the "CANCEL" dialog box button is clicked.'''
@@ -196,7 +200,7 @@ class SearchWindow(Screen):
         self.dialog.dismiss(force=True)
 
     def increase(self):
-        if self.counter < self.free_seats:
+        if self.counter <= self.free_seats:
             self.counter += 1
             self.ids['counter_text'].text = str(self.counter)
 
