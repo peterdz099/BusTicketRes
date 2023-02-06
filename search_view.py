@@ -53,7 +53,7 @@ class SearchWindow(Screen):
 
     def book_tickets(self):
 
-        ticketsResources = Tickets(db)
+        #ticketsResources = Tickets(db)
         msg = ticketsResources.add_ticket(self.ride_id, self.user_id, self.counter)
 
         sm.get_screen("main").ids.screen_manager.get_screen("Tickets").clear_user_tickets()
@@ -178,7 +178,7 @@ class SearchWindow(Screen):
         if self.counter > 0:
 
             self.dialog = MDDialog(
-                text=f"Are you sure You want to book {self.ids['counter_text'].text} tickets?",
+                text=f"Are you sure You want to book {self.counter} tickets?",
                 buttons=[
                     MDFlatButton(
                         text="CANCEL",
@@ -196,7 +196,7 @@ class SearchWindow(Screen):
                     ),
                 ],
             )
-        self.dialog.open()
+            self.dialog.open()
 
     def dialog_close(self):
         self.dialog.dismiss(force=True)

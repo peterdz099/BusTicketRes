@@ -83,7 +83,6 @@ class Tickets:
                 if seat not in temp2:
                     avaliable_seats.append(seat)
 
-
         try:
             with self.connection.cursor() as cursor:
                 for i in range(seats):
