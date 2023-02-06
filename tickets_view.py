@@ -1,7 +1,8 @@
 from kivy.uix.screenmanager import Screen
-from kivymd.uix.list import OneLineAvatarListItem, ImageLeftWidget, TwoLineAvatarListItem, OneLineListItem
+from kivymd.uix.list import ImageLeftWidget, TwoLineAvatarListItem, OneLineListItem
 
-from global_variables import ticketsResources, db
+from database_handler.init_db import Database
+from database_handler.tickets import Tickets
 
 
 class TicketsWindow(Screen):
@@ -16,12 +17,10 @@ class TicketsWindow(Screen):
 
     def load_user_tickets(self):
 
-        #ids.scroll_user_tickets
-        #ids.ticket_details_img
-        # ids.ticket_details
+        db = Database()
+        ticketRes = Tickets(db)
+        user_tickets = ticketRes.list_user_tickets(self.user_id)
 
-        user_tickets = ticketsResources.list_user_tickets(self.user_id)
-        #user_tickets[0].get('ride_id')
         if user_tickets:
             a = 1
             for ticket in user_tickets:
@@ -45,7 +44,6 @@ class TicketsWindow(Screen):
                 text=f"You don't have any tickets"))
         elif len(user_tickets) == 0:
             self.ids.scroll_user_tickets.add_widget(OneLineListItem(text=f"You don't have any tickets"))
-
 
     def load_ticket_details(self, connection, image_src, seat_no, ticket_id, ride_id):
         self.ids.ticket_details_img.source = image_src

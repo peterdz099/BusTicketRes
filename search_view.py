@@ -55,8 +55,8 @@ class SearchWindow(Screen):
     def book_tickets(self):
         self.db = Database()
         ticketsRes = Tickets(self.db)
+        
         msg = ticketsRes.add_ticket(self.ride_id, self.user_id, self.counter)
-
         sm.get_screen("main").ids.screen_manager.get_screen("Tickets").clear_user_tickets()
         sm.get_screen("main").ids.screen_manager.get_screen("Tickets").load_user_tickets()
         self.dialog_close()

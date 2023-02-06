@@ -10,7 +10,6 @@ db = Database()
 
 usersResources = Users(db)
 
-ticketsResources = Tickets(db)
 
 
 
