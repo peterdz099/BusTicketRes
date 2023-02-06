@@ -11,7 +11,8 @@ class TicketsWindow(Screen):
     ride_id = None
     user_id = None
     seat_no = None
-
+    db = Database()
+    ticketRes = Tickets(db)
     def set_user_id(self, user_id):
         self.user_id = user_id
 
@@ -61,7 +62,7 @@ class TicketsWindow(Screen):
 
     def remove_ticket(self):
         print(self.ticket_id, self.ride_id, self.seat_no, f"USER: {self.user_id}")
-        ticketsResources.remove_ticket(self.ticket_id, self.ride_id, self.user_id, self.seat_no)
+        self.ticketRes.remove_ticket(self.ticket_id, self.ride_id, self.user_id, self.seat_no)
         self.clear_user_tickets()
         self.load_user_tickets()
         self.back_to_tickets()
