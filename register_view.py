@@ -1,3 +1,5 @@
+import re
+
 from kivy.uix.screenmanager import Screen
 from kivy.properties import ObjectProperty
 from validate_email import validate_email
@@ -17,26 +19,31 @@ class RegisterWindow(Screen):
         if self.username.text != "" and self.email.text != "" and self.password.text != "" \
                 and self.repeatedPassword.text != "":
 
-            dictionary = usersResources.select_user(username=self.username.text, email=self.email.text)
+            x = re.match("[^'% +=*/]+$", self.username.text)
 
-            check = bool(dictionary)
+            if x is not None:
+                dictionary = usersResources.select_user(username=self.username.text, email=self.email.text)
 
-            if not validate_email(self.email.text):
-                self.ids.new_account_message.text = "use real e-mail"
-                self.reset()
+                check = bool(dictionary)
 
-            elif self.password.text != self.repeatedPassword.text:
-                self.ids.new_account_message.text = "Passwords don't match"
-                self.reset()
-            elif check:
-                self.ids.new_account_message.text = "User Already Exists"
-            else:
-                if self.password.text == self.repeatedPassword.text and validate_email(self.email.text):
-                    usersResources.add_user(self.username.text, self.password.text, self.email.text)
+                if not validate_email(self.email.text):
+                    self.ids.new_account_message.text = "use real e-mail"
                     self.reset()
-                    self.ids.new_account_message.text = "Create new account!"
-                    sm.current = "login"
-                    print("OK")
+
+                elif self.password.text != self.repeatedPassword.text:
+                    self.ids.new_account_message.text = "Passwords don't match"
+                    self.reset()
+                elif check:
+                    self.ids.new_account_message.text = "User Already Exists"
+                else:
+                    if self.password.text == self.repeatedPassword.text and validate_email(self.email.text):
+                        usersResources.add_user(self.username.text, self.password.text, self.email.text)
+                        self.reset()
+                        self.ids.new_account_message.text = "Create new account!"
+                        sm.current = "login"
+                        print("OK")
+            else:
+                self.ids.new_account_message.text = "Name 1=1 not allowed"
         else:
             self.ids.new_account_message.text = "Fill out all the form fields"
             self.reset()

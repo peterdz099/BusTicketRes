@@ -8,6 +8,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.properties import ObjectProperty
 from database_handler.users import is_pwd_correct
 from global_variables import sm, usersResources
+import re
 
 
 class LoginWindow(Screen):
@@ -25,40 +26,44 @@ class LoginWindow(Screen):
         dictionary = usersResources.select_user(email=self.email_or_username.text, username=self.email_or_username.text)
 
         if self.email_or_username.text != "" and self.password != "":
-            if dictionary and dictionary.get('is_verified') == 1:
-                if is_pwd_correct(self.password.text, dictionary.get('password')):
+            x = re.match("[^'% +=*/]+$", self.email_or_username.text)
+            if x is not None:
+                if dictionary and dictionary.get('is_verified') == 1:
+                    if is_pwd_correct(self.password.text, dictionary.get('password')):
 
-                    sm.get_screen("main").ids.screen_manager.get_screen("Search").load_dropdown_items()
-                    sm.get_screen("main").ids.screen_manager.get_screen("Search").set_user_id(dictionary.get('id'))
+                        sm.get_screen("main").ids.screen_manager.get_screen("Search").load_dropdown_items()
+                        sm.get_screen("main").ids.screen_manager.get_screen("Search").set_user_id(dictionary.get('id'))
 
-                    sm.get_screen("main").ids.screen_manager.get_screen("Tickets").set_user_id(dictionary.get('id'))
-                    sm.get_screen("main").ids.screen_manager.get_screen("Tickets").load_user_tickets()
+                        sm.get_screen("main").ids.screen_manager.get_screen("Tickets").set_user_id(dictionary.get('id'))
+                        sm.get_screen("main").ids.screen_manager.get_screen("Tickets").load_user_tickets()
 
-                    sm.get_screen("main").ids.screen_manager.get_screen("Account").set_user(dictionary.get('username'))
-                    self.reset()
-                    sm.current = "main"
+                        sm.get_screen("main").ids.screen_manager.get_screen("Account").set_user(dictionary.get('username'))
+                        self.reset()
+                        sm.current = "main"
+                    else:
+                        self.ids.login_message.text = "Wrong password"
+
+                elif dictionary and dictionary.get('is_verified') == 0:
+                    if is_pwd_correct(self.password.text, dictionary.get('password')):
+
+                        half_screen_manager.current = "half_screen_verify"
+                        half_screen_manager.transition.direction = "down"
+                        LoginWindow.generated_code = random.randint(100000, 1000000)
+                        LoginWindow.email = dictionary.get('email')
+
+                        self.send_email()
+
+                        print(dictionary.get('email'))
+                        print(LoginWindow.generated_code)
+
+                        self.reset()
+
+                    else:
+                        self.ids.login_message.text = "Wrong password"
                 else:
-                    self.ids.login_message.text = "Wrong password"
-
-            elif dictionary and dictionary.get('is_verified') == 0:
-                if is_pwd_correct(self.password.text, dictionary.get('password')):
-
-                    half_screen_manager.current = "half_screen_verify"
-                    half_screen_manager.transition.direction = "down"
-                    LoginWindow.generated_code = random.randint(100000, 1000000)
-                    LoginWindow.email = dictionary.get('email')
-
-                    self.send_email()
-
-                    print(dictionary.get('email'))
-                    print(LoginWindow.generated_code)
-
-                    self.reset()
-
-                else:
-                    self.ids.login_message.text = "Wrong password"
+                    self.ids.login_message.text = "User not found"
             else:
-                self.ids.login_message.text = "User not found"
+                self.ids.login_message.text = "Not allowed"
         else:
             self.ids.login_message.text = "Fill fields below"
 
