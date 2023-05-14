@@ -10,7 +10,7 @@ from database_handler.users import is_pwd_correct
 from global_variables import sm, usersResources
 import re
 
-
+#
 class LoginWindow(Screen):
 
     attempts = 0
